@@ -1,24 +1,31 @@
-import imp, os, re, sys, rfid
+#import imp, os, re, sys, config
 
-def parse_body_constants():
+'''
+Class that contains two parts:
+    - replacement of tags with tags + persistant data as specified in config file
+    - regex replacement for <?wsgi ?> method calls in html for dynamic content
+'''
+
+def persistant_load():
     """
     :Description:
-        Reads and outputs all html files specified by GLOBAL_BODY_LOAD list in
-        /etc/pi/rfid.py settings file.
+        Reads and outputs all contents specified by PERSISTANT_LOAD list in
+        your config.py file
         
         This is to maintain a constant look and feel regardless of the page 
-        that gets loaded.
+        that gets loaded by auto-appending contents to specified tags
         
     :Returns:
         - string: html code
     """
+    ### TODO
     output = ''
-    for htmlfile in rfid.GLOBAL_BODY_LOAD:
-        output += read_html(htmlfile)
+    for htmlfile in config.PERSISTANT_LOAD.keys():
+        pass #FIXME this will need to configure each tag.
         
     return output
 
-def read_html(file_loc):
+def parse_html(original, **kwargs):
     """
     :Description:
         WSGI Helper method to load html templates and parse the wsgi
@@ -29,19 +36,22 @@ def read_html(file_loc):
         this method.
         
     :Parameters:
-        - file_loc: File (html page) location, starting from WEB_FOLDER
+        - original: string; html file in its entirety
+        - **kwargs: dict; contains pairs of {tag: text} that text gets 
+          appended right after the tag found in the html string `original`
         
     :See:
-        - WEB_FOLDER: Defaults to /var/www/[projectname]
+        - config.WEB_FOLDER: Defaults to /var/www/easy-wsgi-conf]
         
     :Returns:
-        String results from the parsed html page with applicable
-        wsgi tags applied.
+        - string; string `original` with replacements made
     """
-    value = parse_wsgi_tags(open(os.path.join(
-        rfid.WEB_FOLDER, file_loc)).read())
-    return value
-    
+    for tag, tagval in kwargs
+        original.replace(tag, tagval)
+        
+    # FIXME: when replacing values, any regular text values will get 
+    # replaced to, such as if you are explaining what a <html> tag is.
+    return original
 
 def replace_in_html(html_contents, wsgi_string, wsgi_result):
     """
@@ -72,6 +82,9 @@ def call_wsgi_command(cmd_tuple):
             
     :Returns:
         Result of python method call
+        
+    #FIXME: Remove debug logs, need pyunit tests, remove python2.x formats if applicable,
+            raise error instead of return string, at least gather string from error message.
     """
 
     mod = None
