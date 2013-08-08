@@ -8,3 +8,11 @@ PROJECT IS BROKEN CURRENTLY!
 wsgi_parser needs work before it can render webpages properly.
 Documentation and Installation docs need to be written
 Basic examples need to be written
+
+Debugging
+------
+
+If you get an Internal Server Error, you can find an entry in the
+/var/log/apache2/error.log file when using apache2 to host wsgi.
+
+

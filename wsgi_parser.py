@@ -1,4 +1,4 @@
-#import imp, os, re, sys, config
+import imp, os, re, sys, config
 
 '''
 Class that contains two parts:
@@ -46,7 +46,7 @@ def parse_html(original, **kwargs):
     :Returns:
         - string; string `original` with replacements made
     """
-    for tag, tagval in kwargs
+    for tag, tagval in kwargs:
         original.replace(tag, tagval)
         
     # FIXME: when replacing values, any regular text values will get 

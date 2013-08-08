@@ -2,14 +2,16 @@
 
 # Global Python imports and then add the configuration file import for 
 # directory paths.
-import os, traceback, config
-import wsgi_parser as wsgiparser
+import os, sys, traceback
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+import wsgi_parser, config
 
 def application(environ, start_response):
 
     try:
-        output = wsgiparser.parse_wsgi_tags(
-            open(config.WEB_ENTRY_POINT).read()) # usually index.html
+	output = open('/var/www/index.html').read()
+#        output = wsgiparser.parse_wsgi_tags(
+#            open(config.WEB_ENTRY_POINT).read()) # usually index.html
     except Exception as E:
         tb = traceback.format_exc()
         output="<html><head></head><body>Error: {}<br />{}<br /></body></html>".format(str(E), tb)
