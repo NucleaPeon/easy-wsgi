@@ -9,9 +9,9 @@ import wsgi_parser, config
 def application(environ, start_response):
 
     try:
-	output = open('/var/www/index.html').read()
-#        output = wsgiparser.parse_wsgi_tags(
-#            open(config.WEB_ENTRY_POINT).read()) # usually index.html
+#	output = open('/var/www/index.html').read()
+        output = wsgi_parser.parse_wsgi_tags(
+            open(config.WEB_ENTRY_POINT).read()) # usually index.html
     except Exception as E:
         tb = traceback.format_exc()
         output="<html><head></head><body>Error: {}<br />{}<br /></body></html>".format(str(E), tb)

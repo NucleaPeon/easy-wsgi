@@ -6,24 +6,20 @@ Class that contains two parts:
     - regex replacement for <?wsgi ?> method calls in html for dynamic content
 '''
 
-def persistant_load():
-    """
-    :Description:
-        Reads and outputs all contents specified by PERSISTANT_LOAD list in
-        your config.py file
-        
-        This is to maintain a constant look and feel regardless of the page 
-        that gets loaded by auto-appending contents to specified tags
-        
-    :Returns:
-        - string: html code
-    """
-    ### TODO
-    output = ''
-    for htmlfile in config.PERSISTANT_LOAD.keys():
-        pass #FIXME this will need to configure each tag.
-        
-    return output
+class Html():
+    structure = {}
+    
+    def __init(self):
+        self.structure['html']  = config.TEMPLATES.get("html", "<html>")
+        self.structure['/html'] = config.TEMPLATES.get("/html", "</html>")
+        self.structure['head']  = config.TEMPLATES.get("head", "<head>")
+        self.structure['/head'] = config.TEMPLATES.get("/head", "</head>")
+        self.structure['body']  = config.TEMPLATES.get("body", "<body>")
+        self.structure['/body'] = config.TEMPLATES.get("/body", "</body>")
+
+    def __str__(self):
+        return "{}\n{}\n{}\n{}\n{}\n{}\n".format(
+            *structure.values())
 
 def parse_html(original, **kwargs):
     """

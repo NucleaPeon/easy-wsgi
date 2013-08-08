@@ -16,8 +16,8 @@
     - ERROR_FILE: string path; Default logfile for errors
 '''
 import os, datetime
-WEB_FOLDER          = os.path.join(os.sep, 'var', 'www', 'easy-wsgi')
-WEB_ENTRY_POINT     = os.path.join(WEB_FOLDER, '..', 'index.html')
+WEB_FOLDER          = os.path.join(os.sep, 'var', 'www', 'default')
+WEB_ENTRY_POINT     = os.path.join(WEB_FOLDER, 'GetDocById.html')
 
 # Set the PYTHONPATH variable to itself plus the WEB_FOLDER
 os.environ['PYTHONPATH'] = '{}:{}'.format(
@@ -33,7 +33,7 @@ SCRIPTS             = os.path.join(WEB_FOLDER, 'scripts')
 LOG_FILE            = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.log')
 ERROR_FILE          = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.err')
 
-# Format is {tag : path to load for tag}
+# Format is {tag : path to load for tag -or- a literal string}
 # Explaination:
 #   Persistant load is a way in which a tag will always have contents
 #   appended to it regardless of which page is produced
@@ -43,4 +43,4 @@ ERROR_FILE          = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.err')
 #       path, to, file)).read() 
 #   in the place of the string. It is a good idea to modularize your code
 #   and place small snippets or files here.
-PERSISTANT_LOAD     = {'<html>', '<!--\n Author: \nDate: {}\n-->'.format(str(datetime.datetime.now()))}
+TEMPLATES     = {'<html>', '<!--\n Author: \nDate: {}\n-->'.format(str(datetime.datetime.now()))}
