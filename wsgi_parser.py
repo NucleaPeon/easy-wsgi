@@ -142,16 +142,13 @@ def __call_wsgi(cmd_tuple):
     # module that we import using full absolute path; otherwise we
     # attempt a simple __import__ on that module, which works for official
     # imports and modules on the sys.path (customs won't be)
-    
+    return str(cmd_tuple) 
     mod = importlib.import_module(cmd_tuple[0])
-#    if mod == None:
-#        raise Exception("Error: WSGI Module Import invalid; Got 'NoneType'")
+    if mod == None:
+        raise Exception("Error: WSGI Module Import invalid; Got 'NoneType'")
     
     # Arguments parsed here:
-#    funcbuild = mod
-    
-#    for x in cmd_tuple[1]:
-#        funcbuild = getattr(mod, x)
+    funcbuild = getattr(mod, cmd_tuple[1])
 
 #    if cmd_tuple[2]:
 #        # TODO: Parse to make arguments sane (strings don't pass properly)
@@ -179,7 +176,7 @@ def __call_wsgi(cmd_tuple):
 #                else:
 #                    quoted_arg += " " + arg
 #        return funcbuild(*proper_args)
-    return str(mod)
+    return str(funcbuild)
     
 
 def parse_wsgi_tags(html_contents):
@@ -199,25 +196,23 @@ def parse_wsgi_tags(html_contents):
     :Returns:
         String of html contents with replaced wsgi tags and results.
     """
-        
-    m = re.findall('<\?wsgi(.*)\?>', html_contents)
-    mod     = ''
-    classes = ''
-    args    = ''
-    new_contents = ''
-    for pystring in m:
-        pystring = pystring.strip()
-        if pystring:
-            parsed = pystring.split(' ') # list [mod, method/class, args]
-            mod = parsed[0]
-            classes = parsed[1].split('.')
-            try:
-                # Place arguments in a string, not as a list
-                args = ' '.join(parsed[2:])
-            except:
-                pass
-            passin = [mod, classes, args]
-            result = __call_wsgi(passin)
-            html_contents = __replace_tag(html_contents, pystring, result)
+    m = re.findall('<\?wsgi(.*)\?>', html_contents)[0].split(' ')
+    wsgilist = []
+    for x in m:
+        if x:
+            wsgilist.append(x)
+    mod     = wsgilist[0].split('.')
+    classes = wsgilist[1]
+    method  = wsgilist[2]
+#    try:
+        # Place arguments in a string, not as a list
+#        args = ' '.join(parsed[2:])
+#            except:
+#                pass
+    #        return str(parsed)
+#            passin = (mod, classes, args, kwargs)
+#            result = __call_wsgi(passin)
+#            html_contents = __replace_tag(html_contents, pystring, result)
             
-    return html_contents
+#    return html_contents
+    return str([mod, classes, method])
