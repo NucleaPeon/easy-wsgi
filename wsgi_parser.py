@@ -1,4 +1,4 @@
-import imp, os, re, sys, config
+import imp, os, re, sys, config, importlib
 
 '''
 Class that contains two parts:
@@ -62,8 +62,8 @@ class Html():
             templatedhtml = open(htmlfile, 'r').read()
             for key in self.structure.keys():
                 if not self.structure.get(key) is None:
-                    templatedhtml = templatedhtml.replace(key, 
-                                                          self.structure[key])
+                    templatedhtml.replace(key, 
+                                          self.structure[key])
                 
         else:
             for x in ['html', 'head', '/head', 'body', '/body', '/html']:
@@ -73,44 +73,50 @@ class Html():
                     templatedhtml.append(self.structure[x])
         return templatedhtml
     
+class Wsgi():
+    '''
+    :Description:
+        This class represents a tag. Once a tag object is found (initialized),
+        this class allows retrieval of the module name (and loaded module object),
+        Class (if applicable), method, and any/all arguments inside it.
+        
+        Wsgi tag format should read: <?wsgi mod class method ?>
+        with optional additional arguments. If there is no class, it SHOULD
+        be set to "None"
+    '''
     
-def parse_html(original, **kwargs):
+    def __init__(self, *args):
+        '''
+        '''
+        self.args = args
+        
+        
+    def replace(self, string):
+        '''
+        :Description:
+            Based on the parameters given,
+            return the results (not as a string, but natively)
+        '''
+        pass
+
+def __replace_tag(html_contents, wsgi_string, wsgi_result):
     """
     :Description:
-        WSGI Helper method to load html templates and parse the wsgi
-        tags that may be found in them. If this method is not called,
-        then only strings will be read and native html markups applied.
-        (That means any <?wsgi ?> tags will NOT be visible or utilized
-        when a string containing them is passed in *without* calling
-        this method.
+        Replaces the wsgi tag with the wsgi result.
+        This method does not actually *call* the wsgi method, nor
+        ensure that the module and class and arguments are parsed.
+        It's a simple "go through html file and replace tags with
+        result".
         
     :Parameters:
-        - original: string; html file in its entirety
-        - **kwargs: dict; contains pairs of {tag: text} that text gets 
-          appended right after the tag found in the html string `original`
-        
-    :See:
-        - config.WEB_FOLDER: Defaults to /var/www/easy-wsgi-conf]
-        
-    :Returns:
-        - string; string `original` with replacements made
+        - html_contents: string; entire html file
+        - wsgi_string: the tag complete with module, class and args
+        - wsgi_result: the returned value(s) of the method call
     """
-    for tag, tagval in kwargs:
-        original.replace(tag, tagval)
-        
-    # FIXME: when replacing values, any regular text values will get 
-    # replaced to, such as if you are explaining what a <html> tag is.
-    return original
-
-def replace_in_html(html_contents, wsgi_string, wsgi_result):
-    """
-    :Description:
-        Replaces the wsgi tag with the wsgi result
-    """
-    return re.sub(r'''<\?wsgi %s \?>''' % wsgi_string,
+    return re.sub(r'''<\?wsgi {} \?>'''.format(wsgi_string),
                      str(wsgi_result), html_contents)
 
-def call_wsgi_command(cmd_tuple):
+def __call_wsgi(cmd_tuple):
     """
     :Description:
         Calls and returns the python command specified by wsgi, does NOT 
@@ -131,27 +137,15 @@ def call_wsgi_command(cmd_tuple):
             
     :Returns:
         Result of python method call
-        
-    #FIXME: Remove debug logs, need pyunit tests, remove python2.x formats if applicable,
-            raise error instead of return string, at least gather string from error message.
     """
-
-    mod = None
     # Check for "." in the module path: If found, this is a customized
     # module that we import using full absolute path; otherwise we
     # attempt a simple __import__ on that module, which works for official
     # imports and modules on the sys.path (customs won't be)
     
-    a = open("/tmp/test.log", "a")
-    if "." in cmd_tuple[0]:
-        modname = cmd_tuple[0].split(".")
-        modname = modname[len(modname) - 1]
-        f, filename, desc = imp.find_module(modname)
-        mod = imp.load_module(modname, f, filename, desc)
-    else:
-        mod         = __import__(cmd_tuple[0])
+    mod = importlib.import_module(cmd_tuple[0])
     if mod == None:
-        return "Error: WSGI Module Import invalid; Got 'NoneType'"
+        raise Exception("Error: WSGI Module Import invalid; Got 'NoneType'")
     
     # Arguments parsed here:
     funcbuild = mod
@@ -212,7 +206,6 @@ def parse_wsgi_tags(html_contents):
     args    = ''
     new_contents = ''
     for pystring in m:
-        
         pystring = pystring.strip()
         if pystring:
             parsed = pystring.split(' ') # list [mod, method/class, args]
