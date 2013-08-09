@@ -17,7 +17,7 @@
 '''
 import os, datetime
 WEB_FOLDER          = os.path.join(os.sep, 'var', 'www', 'default')
-WEB_ENTRY_POINT     = os.path.join(WEB_FOLDER, 'GetDocById.html')
+WEB_ENTRY_POINT     = os.path.join(os.sep, 'var', 'www', 'index.html')
 
 # Set the PYTHONPATH variable to itself plus the WEB_FOLDER
 os.environ['PYTHONPATH'] = '{}:{}'.format(

@@ -144,42 +144,42 @@ def __call_wsgi(cmd_tuple):
     # imports and modules on the sys.path (customs won't be)
     
     mod = importlib.import_module(cmd_tuple[0])
-    if mod == None:
-        raise Exception("Error: WSGI Module Import invalid; Got 'NoneType'")
+#    if mod == None:
+#        raise Exception("Error: WSGI Module Import invalid; Got 'NoneType'")
     
     # Arguments parsed here:
-    funcbuild = mod
+#    funcbuild = mod
     
-    for x in cmd_tuple[1]:
-        funcbuild = getattr(mod, x)
+#    for x in cmd_tuple[1]:
+#        funcbuild = getattr(mod, x)
 
-    if cmd_tuple[2]:
-        # TODO: Parse to make arguments sane (strings don't pass properly)
-        arguments = cmd_tuple[2].split(" ")
-        proper_args = []
-        started = False
-        quoted_arg = ''
-        for arg in arguments:
-            if not arg:
-                continue
-            if arg[0] == '"':
-                started = True
-                quoted_arg = arg.strip('"')
-                if quoted_arg[len(quoted_arg) - 1] == '"':
-                    started = False
-                    proper_args.append(quoted_arg)
-                    continue
-            elif arg[len(arg) - 1] == '"':
-                quoted_arg += " " + arg.strip('"')
-                started = False
-                proper_args.append(quoted_arg)
-            else:
-                if not started:
-                    proper_args.append(arg)
-                else:
-                    quoted_arg += " " + arg
-        return funcbuild(*proper_args)
-    return funcbuild()
+#    if cmd_tuple[2]:
+#        # TODO: Parse to make arguments sane (strings don't pass properly)
+#        arguments = cmd_tuple[2].split(" ")
+#        proper_args = []
+#        started = False
+#        quoted_arg = ''
+#        for arg in arguments:
+#            if not arg:
+#                continue
+#            if arg[0] == '"':
+#                started = True
+#                quoted_arg = arg.strip('"')
+#                if quoted_arg[len(quoted_arg) - 1] == '"':
+#                    started = False
+#                    proper_args.append(quoted_arg)
+#                    continue
+#            elif arg[len(arg) - 1] == '"':
+#                quoted_arg += " " + arg.strip('"')
+#                started = False
+#                proper_args.append(quoted_arg)
+#            else:
+#                if not started:
+#                    proper_args.append(arg)
+#                else:
+#                    quoted_arg += " " + arg
+#        return funcbuild(*proper_args)
+    return str(mod)
     
 
 def parse_wsgi_tags(html_contents):
@@ -217,7 +217,7 @@ def parse_wsgi_tags(html_contents):
             except:
                 pass
             passin = [mod, classes, args]
-            result = call_wsgi_command(passin)
-            html_contents = replace_in_html(html_contents, pystring, result)
+            result = __call_wsgi(passin)
+            html_contents = __replace_tag(html_contents, pystring, result)
             
     return html_contents
