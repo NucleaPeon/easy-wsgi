@@ -72,33 +72,7 @@ class Html():
                 else:
                     templatedhtml.append(self.structure[x])
         return templatedhtml
-    
-class Wsgi():
-    '''
-    :Description:
-        This class represents a tag. Once a tag object is found (initialized),
-        this class allows retrieval of the module name (and loaded module object),
-        Class (if applicable), method, and any/all arguments inside it.
-        
-        Wsgi tag format should read: <?wsgi mod class method ?>
-        with optional additional arguments. If there is no class, it SHOULD
-        be set to "None"
-    '''
-    
-    def __init__(self, *args):
-        '''
-        '''
-        self.args = args
-        
-        
-    def replace(self, string):
-        '''
-        :Description:
-            Based on the parameters given,
-            return the results (not as a string, but natively)
-        '''
-        pass
-
+           
 def __replace_tag(html_contents, wsgi_string, wsgi_result):
     """
     :Description:
@@ -113,10 +87,10 @@ def __replace_tag(html_contents, wsgi_string, wsgi_result):
         - wsgi_string: the tag complete with module, class and args
         - wsgi_result: the returned value(s) of the method call
     """
-    return re.sub(r'''<\?wsgi {} \?>'''.format(wsgi_string),
+    return re.sub(r'''{}'''.format(wsgi_string),
                      str(wsgi_result), html_contents)
 
-def __call_wsgi(cmd_tuple):
+def __call_wsgi(*cmd_tuple):
     """
     :Description:
         Calls and returns the python command specified by wsgi, does NOT 
@@ -132,8 +106,11 @@ def __call_wsgi(cmd_tuple):
           (...) refers to a tuple where one or more strings can be specified;
           a minimum of a method call must be specified (without ending ()'s )
           that is lead up by zero-or-more python components (such as classes).
-        :example:
-            (<module datetime>, ('datetime', 'now',)) -> current datetime
+          :example:
+              (<module datetime>, ('datetime', 'now',)) -> current datetime
+          Please note that wsgi is meant for calling module-level methods,
+          not class methods, although it should be possible by specifying
+          using period delimited module paths in <wsgi ?> tags.
             
     :Returns:
         Result of python method call
@@ -142,42 +119,31 @@ def __call_wsgi(cmd_tuple):
     # module that we import using full absolute path; otherwise we
     # attempt a simple __import__ on that module, which works for official
     # imports and modules on the sys.path (customs won't be)
-    return str(cmd_tuple) 
-    mod = importlib.import_module(cmd_tuple[0])
-    if mod == None:
-        raise Exception("Error: WSGI Module Import invalid; Got 'NoneType'")
     
+    cmd_tuple = tuple([x for x in cmd_tuple if bool(x)])
+#    if mod == None:
+#        raise Exception("Error: WSGI Module Import invalid; Got 'NoneType'")
+    modpath = cmd_tuple[0].split('.')
+    if len(modpath) > 1:
+        # Parse period-separated string into list, module import name should be
+        # in last position, import path is rest of array
+        tuple_sep = len(modpath) - 1
+        mod = importlib.import_module(modpath[tuple_sep], modpath[:tuple_sep])
+    else:
+        mod     = importlib.import_module(modpath[0])
+    classes = cmd_tuple[1]
+    method  = cmd_tuple[2]
+    try:
+        args = cmd_tuple[3:]
+    except:
+        pass
     # Arguments parsed here:
     funcbuild = getattr(mod, cmd_tuple[1])
-
-#    if cmd_tuple[2]:
-#        # TODO: Parse to make arguments sane (strings don't pass properly)
-#        arguments = cmd_tuple[2].split(" ")
-#        proper_args = []
-#        started = False
-#        quoted_arg = ''
-#        for arg in arguments:
-#            if not arg:
-#                continue
-#            if arg[0] == '"':
-#                started = True
-#                quoted_arg = arg.strip('"')
-#                if quoted_arg[len(quoted_arg) - 1] == '"':
-#                    started = False
-#                    proper_args.append(quoted_arg)
-#                    continue
-#            elif arg[len(arg) - 1] == '"':
-#                quoted_arg += " " + arg.strip('"')
-#                started = False
-#                proper_args.append(quoted_arg)
-#            else:
-#                if not started:
-#                    proper_args.append(arg)
-#                else:
-#                    quoted_arg += " " + arg
-#        return funcbuild(*proper_args)
-    return str(funcbuild)
-    
+    funcbuild = getattr(funcbuild, cmd_tuple[2])
+    retval = funcbuild
+    if len(cmd_tuple) > 3: # (mod, method, func)
+        return funcbuild(*cmd_tuple[:3])
+    return retval()
 
 def parse_wsgi_tags(html_contents):
     """
@@ -189,6 +155,10 @@ def parse_wsgi_tags(html_contents):
         
         Each step is done in a different method. Actual replacement is done
         here.
+
+        Calls __call_wsgi to return string results of method call, then
+        __replace_tags to switch <?wsgi ?> with "results" in the html 
+        code
         
     :Parameters:
         - html_contents: string of the entire html file
@@ -196,23 +166,13 @@ def parse_wsgi_tags(html_contents):
     :Returns:
         String of html contents with replaced wsgi tags and results.
     """
-    m = re.findall('<\?wsgi(.*)\?>', html_contents)[0].split(' ')
-    wsgilist = []
-    for x in m:
-        if x:
-            wsgilist.append(x)
-    mod     = wsgilist[0].split('.')
-    classes = wsgilist[1]
-    method  = wsgilist[2]
-#    try:
+    for wsgi in re.findall('<\?wsgi(.*)\?>', html_contents):
+        return __call_wsgi(*wsgi.split(' '))
+        #return str([line for line in wsgi if line!= ''])
+    #html_contents = self.__replace_tag(html_contents, wsgi, __call_wsgi(wsgi))
+    #tmp += '{}\n'.format(str(wsgi))
         # Place arguments in a string, not as a list
-#        args = ' '.join(parsed[2:])
-#            except:
-#                pass
-    #        return str(parsed)
-#            passin = (mod, classes, args, kwargs)
+        #            passin = (mod, classes, args, kwargs)
 #            result = __call_wsgi(passin)
 #            html_contents = __replace_tag(html_contents, pystring, result)
-            
-#    return html_contents
-    return str([mod, classes, method])
+    return str(tmp)
