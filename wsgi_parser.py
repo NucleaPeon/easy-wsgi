@@ -8,23 +8,26 @@ Class that contains two parts:
 
 class Html():
     structure = {}
+    html = ''
     
     def __init(self):
-        self.structure['html']  = config.TEMPLATES.get("html", None)
-        self.structure['/html'] = config.TEMPLATES.get("/html", None)
-        self.structure['head']  = config.TEMPLATES.get("head", None)
-        self.structure['/head'] = config.TEMPLATES.get("/head", None)
-        self.structure['body']  = config.TEMPLATES.get("body", None)
-        self.structure['/body'] = config.TEMPLATES.get("/body", None)
+        self.structure['html']  = '<html>' #config.TEMPLATES.get("html", '<html>')
+        self.structure['/html'] = '</html>' #config.TEMPLATES.get("/html", '</html>')
+        self.structure['head']  = '<head>' #config.TEMPLATES.get("head", '<head>')
+        self.structure['/head'] = '</head>' #config.TEMPLATES.get("/head", '</head>')
+        self.structure['body']  = '<body>' #config.TEMPLATES.get("body", '<body>')
+        self.structure['/body'] = '</body>' #config.TEMPLATES.get("/body", '</body>')
 
     def __str__(self):
-        return "{}\n{}\n{}\n{}\n{}\n{}\n".format(
-            *structure.values())
+        params = self.structure
+#        return "{}\n{}\n{}\n{}\n{}\n{}\n".format(
+#            *params)
+        return str(params)
 
-    def parse(self, htmlfile=None):
+    def parse(self, htmlcontents=None):
         '''
         :Description:
-            Replaces the incoming htmlfile's tags with those
+            Replaces the incoming htmlcontents's tags with those
             in the Template, or none at all.
             
             Tags that can be Templated are limited to html, body and head.
@@ -49,17 +52,18 @@ class Html():
             Cool trick eh?
             
         :Parameters:
-            - htmlfile: string; path to the file to read and replace
-              tags with
+            - htmlcontents: string; html code to configure with Template
               
         :Returns:
             - string; output of replaced input file with corrections made
         '''
+        self.html = htmlcontents
+        return htmlcontents
         templatedhtml = []
         # Must append in order
-        if not htmlfile is None:
+        if not htmlcontents is None:
             # we have a string to replace
-            templatedhtml = open(htmlfile, 'r').read()
+            templatedhtml = open(htmlcontents, 'r').read()
             for key in self.structure.keys():
                 if not self.structure.get(key) is None:
                     templatedhtml.replace(key, 
@@ -145,7 +149,7 @@ def __call_wsgi(*cmd_tuple):
         return funcbuild(*cmd_tuple[:3])
     return retval()
 
-def parse_wsgi_tags(html_contents):
+def parse_wsgi_tags(html_contents=config.WEB_ENTRY_POINT):
     """
     :Description:
         Find all wsgi tags found in the html body and for each instance,
@@ -166,8 +170,8 @@ def parse_wsgi_tags(html_contents):
     :Returns:
         String of html contents with replaced wsgi tags and results.
     """
-    for wsgi in re.findall('<\?wsgi(.*)\?>', html_contents):
-        return __call_wsgi(*wsgi.split(' '))
+    #for wsgi in re.findall('<\?wsgi(.*)\?>', html_contents):
+    #    return str(__call_wsgi(*wsgi.split(' ')))
         #return str([line for line in wsgi if line!= ''])
     #html_contents = self.__replace_tag(html_contents, wsgi, __call_wsgi(wsgi))
     #tmp += '{}\n'.format(str(wsgi))
@@ -175,4 +179,6 @@ def parse_wsgi_tags(html_contents):
         #            passin = (mod, classes, args, kwargs)
 #            result = __call_wsgi(passin)
 #            html_contents = __replace_tag(html_contents, pystring, result)
-    return str(tmp)
+    html = Html()
+    html_contents = html.parse(html_contents) 
+    return str(html_contents)

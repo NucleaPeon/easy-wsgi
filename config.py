@@ -43,4 +43,5 @@ ERROR_FILE          = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.err')
 #       path, to, file)).read() 
 #   in the place of the string. It is a good idea to modularize your code
 #   and place small snippets or files here.
-TEMPLATES     = {'<html>', '<!--\n Author: \nDate: {}\n-->'.format(str(datetime.datetime.now()))}
+#TEMPLATES     = {'html': '<!--\n Author: \nDate: {}\n-->'.format(str(datetime.datetime.now())),
+#                 '/html': '</html>'}
