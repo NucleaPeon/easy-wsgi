@@ -33,6 +33,15 @@ SCRIPTS             = os.path.join(WEB_FOLDER, 'scripts')
 LOG_FILE            = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.log')
 ERROR_FILE          = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.err')
 
+# Whether to parse <?wsgi-template ?> tags, pointing to a python file with required methods
+# Example:
+#   <?wsgi-template title import.python.module *args ?>
+# would replace the <title> tag with import.python.module.title
+# - method is the name of the tag. *args can contain 'end_bracket' string
+#   which forces the </tag> instead of <tag>
+
+USE_TEMPLATES = False
+
 # Format is {tag : path to load for tag -or- a literal string}
 # Explaination:
 #   Persistant load is a way in which a tag will always have contents
