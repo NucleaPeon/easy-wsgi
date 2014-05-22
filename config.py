@@ -7,6 +7,7 @@
 :Options:
     - WEB_FOLDER: list of os.path; Paths to be added to PYTHONPATH, where modules can be located and run.
     - WEB_ENTRY_POINT: os.path; The webpage (usually index.html) that you want wsgi to present to the user
+      when you access the wsgi application without additional url parameters
     - JS: os.path; Default javascript contents directory
     - IMAGES: os.path; Default images contents directory
     - CSS: os.path; Default CSS contents directory
@@ -36,7 +37,10 @@ ERROR_FILE          = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.err')
 USE_TEMPLATES = False
 
 # Associate tags with python methods 
-MASTER_TEMPLATE = {'*': print}
+#       * : Do this for all tags
+#       - : Do this for the top of the html page (DOCTYPES, etc)
+#       
+MASTER_TEMPLATE = {} #'*': print}
 
 #
 # Example:
