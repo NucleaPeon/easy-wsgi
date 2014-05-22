@@ -12,13 +12,7 @@
 '''
 
 import config, os
-
-def template_tag(tag, method, *args, **kwargs):
-    '''
-    :Description:
-        Read the config.py module and replace tag bodies with contents
-    '''
-    pass
+from lxml import etree as ElementTree
 
 def load_error_page(page, attempted_page, *args, **kwargs):
     '''
@@ -30,16 +24,21 @@ def load_error_page(page, attempted_page, *args, **kwargs):
         - string
     '''
     if not os.path.exists(page):
-        html = ["""<html>
+        html = """<html>
 <head>
     <title>{}</title>
 </head>
 <body>
 {}
 </body>
-</html>""".format('Page {} not found'.format(page),
-                  'Could not find page {}.<br /> Please contact your administrator at {} <br />'.format(attempted_page,
-                  config.ADMINISTRATOR_EMAIL))]
+</html>""".format('Error Page {} not found'.format(page),
+                  'Could not find page <b>{}</b> or {} to display error.<br /> Please contact your administrator at {} <br />'.format(attempted_page,
+                  page, config.ADMINISTRATOR_EMAIL))
     else:
-        html = [open(page).read()]
-    return html
+        html = open(page).read()
+
+    return ElementTree.XML(html)
+
+def get_default_html():
+    # return xml of empty html xml skeleton
+    return """<html><head><title></title></head><body></body></html>"""

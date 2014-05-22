@@ -19,12 +19,14 @@
 import os, sys, datetime
 
 WEB_FOLDER          = os.path.join(os.sep, 'var', 'www')
-WEB_ENTRY_POINT     = os.path.join(os.sep, 'var', 'www', 'index.html')
+# Use if you want to redirect user from WEB_FOLDER to a webpage if root is visited
+#       Example: http://mysite --> http://mysite/index.html
+WEB_ENTRY_POINT     = os.path.join(os.sep, 'var', 'www', 'index.html') 
 
 sys.path.append(WEB_FOLDER)
     
 # List web-customizable content folders
-#JS                  = os.path.join(WEB_FOLDER, 'javascript')
+JS                  = os.path.join(WEB_FOLDER, 'js')
 #IMAGES              = os.path.join(WEB_FOLDER, 'images')
 #CSS                 = os.path.join(WEB_FOLDER, 'css')
 #SCRIPTS             = os.path.join(WEB_FOLDER, 'scripts')
