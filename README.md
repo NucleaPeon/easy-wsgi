@@ -19,10 +19,7 @@ Examples
 Templating
 ------
 
-Whether to parse `<?wsgi-template ?>` tags, pointing to a python file with 
-required methods
-
-Format:
+Tag Format:
 
 `<? [(optional)variablename]=path.to.module.class_or_method(args, kwargs) ?>`
 
@@ -53,7 +50,7 @@ and classes (dict, list), but for now we limit it to int/float/string/bool.
 Master Template Example
 ------
 
-If you want every single <title> tag to be generated that goes through easy-wsgi,
+If you want every single `<title>` tag to be generated that goes through easy-wsgi,
 use a **Master Template**. 
 
 This is done by:
