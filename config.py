@@ -29,18 +29,21 @@ sys.path.append(WEB_FOLDER)
 #CSS                 = os.path.join(WEB_FOLDER, 'css')
 #SCRIPTS             = os.path.join(WEB_FOLDER, 'scripts')
     
+# Paths to Error Pages:
+ERROR_404       = os.path.join(WEB_FOLDER, 'error404.html')
+    
 # These are fairly sane default log paths. 
 LOG_FILE            = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.log')
 ERROR_FILE          = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.err')
 
 # Whether to use a Master Template on every loaded page
-USE_TEMPLATES = False
+USE_TEMPLATES = True
 
 # Associate tags with python methods 
 #       * : Do this for all tags
 #       - : Do this for the top of the html page (DOCTYPES, etc)
 #       
-MASTER_TEMPLATE = {} #'*': print}
+MASTER_TEMPLATE = {'title': lambda: "Best page in the world"}
 
 #
 # Example:

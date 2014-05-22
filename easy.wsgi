@@ -11,10 +11,12 @@ logging.basicConfig(filename='/var/log/easywsgi/example.log', filemode='a',
 
 def application(environ, start_response):
 
+    logging.debug(str(environ))
     try:
         if config.USE_TEMPLATES:
             # Read in Html File:
-            logging.debug("Using Templates")
+            logging.debug("Using Templates, found keys: {}".format(config.MASTER_TEMPLATE.keys()))
+            path = environ.get('REQUEST_URI', config.ERROR_404)
         
         output = ['''<b>Hello World</b>''']
         output.append('''This is a new line in code, but only a <br /> does a new line in html''')
@@ -31,9 +33,3 @@ def application(environ, start_response):
                         ('Content-Length', str(len(output)))]
     start_response(status, response_headers)
     yield output 
-
-'''
-def application(environ, start_response):
-    start_response("200 OK", [("Content-Type", "text/plain")])
-    return [b"Hello World!"]
-'''
