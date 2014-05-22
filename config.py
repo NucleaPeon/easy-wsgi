@@ -30,7 +30,7 @@ sys.path.append(WEB_FOLDER)
 #SCRIPTS             = os.path.join(WEB_FOLDER, 'scripts')
     
 # Paths to Error Pages:
-ERROR_404       = os.path.join(WEB_FOLDER, 'error404.html')
+ERRORS = {'404': os.path.join(WEB_FOLDER, 'error404.html')}
     
 # These are fairly sane default log paths. 
 LOG_FILE            = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.log')
