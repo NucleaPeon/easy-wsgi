@@ -11,7 +11,7 @@
     
 '''
 
-import config
+import config, os
 
 def template_tag(tag, method, *args, **kwargs):
     '''
@@ -25,10 +25,21 @@ def load_error_page(page, attempted_page, *args, **kwargs):
     :Description:
         Return error page html without parsing and replacing any tags, as
         we want the error page to be generated and return, unadulterated.
+        
+    :Returns:
+        - string
     '''
-    return '<br>'
-    
-def return_html_skeleton():
-    return {'html': '',
-            'head': {'title': ''},
-            'body': ''}
+    if not os.path.exists(page):
+        html = ["""<html>
+<head>
+    <title>{}</title>
+</head>
+<body>
+{}
+</body>
+</html>""".format('Page {} not found'.format(page),
+                  'Could not find page {}.<br /> Please contact your administrator at {} <br />'.format(attempted_page,
+                  config.ADMINISTRATOR_EMAIL))]
+    else:
+        html = [open(page).read()]
+    return html

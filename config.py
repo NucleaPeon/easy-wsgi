@@ -50,3 +50,4 @@ MASTER_TEMPLATE = {'title': lambda: "Best page in the world"}
 #       MASTER_TEMPLATE = {'title': my.module.print_title,
 #                          'h1'   : my.biggest.heading}
 #
+ADMINISTRATOR_EMAIL = 'admin@example.com'

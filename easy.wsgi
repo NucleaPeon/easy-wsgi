@@ -29,7 +29,7 @@ def application(environ, start_response):
         
     except Exception as E:
         tb = traceback.format_exc()
-        output = "<html><head></head><body>Error: {}<br />{}<br /></body></html>".format(str(E), tb)
+        logging.error(str(E) + ", " + tb)
         
     # Break down organized html code into one byte string:
     output = bytes('\n'.join(output), encoding="UTF-8")
