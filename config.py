@@ -15,20 +15,18 @@
     - ERROR_FILE: os.path; Default logfile for errors
 '''
 
-import os, datetime
+import os, sys, datetime
 
-WEB_FOLDER          = [os.path.join(os.sep, 'var', 'www')]
+WEB_FOLDER          = os.path.join(os.sep, 'var', 'www')
 WEB_ENTRY_POINT     = os.path.join(os.sep, 'var', 'www', 'index.html')
 
-# Set the PYTHONPATH variable to itself plus the WEB_FOLDER
-os.environ['PYTHONPATH'] = '{}:{}'.format(
-    WEB_FOLDER, os.environ.get('PYTHONPATH', ''))
+sys.path.append(WEB_FOLDER)
     
 # List web-customizable content folders
-JS                  = os.path.join(WEB_FOLDER, 'javascript')
-IMAGES              = os.path.join(WEB_FOLDER, 'images')
-CSS                 = os.path.join(WEB_FOLDER, 'css')
-SCRIPTS             = os.path.join(WEB_FOLDER, 'scripts')
+#JS                  = os.path.join(WEB_FOLDER, 'javascript')
+#IMAGES              = os.path.join(WEB_FOLDER, 'images')
+#CSS                 = os.path.join(WEB_FOLDER, 'css')
+#SCRIPTS             = os.path.join(WEB_FOLDER, 'scripts')
     
 # These are fairly sane default log paths. 
 LOG_FILE            = os.path.join(os.sep, 'var', 'log', 'easy-wsgi.log')
