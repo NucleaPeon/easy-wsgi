@@ -27,15 +27,15 @@ def application(environ, start_response):
         name = config.WEB_ENTRY_POINT
     path = os.path.join(config.WEB_FOLDER, name)
     page = open(path).read()
-    
+    xml = ElementTree.XML(page if page else wsgi_parser.load_error_page(config.ERRORS.get('404'),
+                                                path))
     
     if config.USE_TEMPLATES:
         # Read in Html File:
         # Call wsgi_parser.parse(string) to modify components based on config
         pass
     
-    xml = bytes(page if page else wsgi_parser.load_error_page(config.ERRORS.get('404'),
-                                                path), encoding="UTF-8")
+    xml = ElementTree.tostring(xml, encoding='US-ASCII', method='html')
     
     status = '200 OK'
     response_headers = [('Content-type', 'text/html'),
