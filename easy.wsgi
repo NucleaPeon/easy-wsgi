@@ -25,16 +25,22 @@ def application(environ, start_response):
     name = environ.get('REQUEST_URI').lstrip('/')
     if not name:
         name = config.WEB_ENTRY_POINT
+    
+    # Get path to desired page
     path = os.path.join(config.WEB_FOLDER, name)
-    page = open(path).read()
-    xml = ElementTree.XML(page if page else wsgi_parser.load_error_page(config.ERRORS.get('404'),
-                                                path))
+    logging.debug(path)
+    # Read desired page or produce error if not found
+    page = open(path).read() if os.path.exists(path) else wsgi_parser.load_error_page(config.ERRORS.get('404'), path)
+    logging.debug(page)
+    # Render page in xml
+    xml = ElementTree.XML(page)
     
     if config.USE_TEMPLATES:
         # Read in Html File:
         # Call wsgi_parser.parse(string) to modify components based on config
         pass
     
+    # Convert XML to bytes(str)
     xml = ElementTree.tostring(xml, encoding='US-ASCII', method='html')
     
     status = '200 OK'

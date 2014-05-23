@@ -37,7 +37,7 @@ def load_error_page(page, attempted_page, *args, **kwargs):
     else:
         html = open(page).read()
 
-    return ElementTree.XML(html)
+    return html
 
 def get_default_html():
     # return xml of empty html xml skeleton
