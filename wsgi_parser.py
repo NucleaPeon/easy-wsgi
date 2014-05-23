@@ -14,9 +14,19 @@
 import config, os, re
 from lxml import etree as ElementTree
 import logging
+import datetime
 
 logging.basicConfig(filename='/var/log/easywsgi/parser.log', filemode='w',
                    level=logging.DEBUG)
+
+def custom_parser(statement):
+    # use regex to grab an equals sign if NOT in () enclosure
+    # If = exists to left of (), assign it a variable
+    # Continue parsing right of = or whole statement if not found
+    # Look for ()
+    # parse arguments and kwargs inside () if applicable
+    return eval(statement)
+
 def parse(source):
     '''
     '''
@@ -25,9 +35,10 @@ def parse(source):
     matches = pattern.findall(source)
     for m in matches:
         logging.debug("Found tag {}".format(m))
-        source = pattern.sub(m, source, count=1) # Only replace this instance of the string
+        source = pattern.sub(str(custom_parser(m)), source, count=1) # Only replace this instance of the string
     
     logging.debug("Source after replacement: {}".format(source))
+    
     return source
 
 def load_error_page(page, attempted_page, *args, **kwargs):
