@@ -30,7 +30,6 @@ def application(environ, start_response):
     # Parse all <? ?> tags
     page = wsgi_parser.parse(page)
     # Render page in xml
-    '''
     xml = ElementTree.XML(page)
     
     if config.USE_TEMPLATES:
@@ -40,8 +39,6 @@ def application(environ, start_response):
     
     # Convert XML to bytes(str)
     xml = ElementTree.tostring(xml, encoding='US-ASCII', method='html')
-    '''
-    xml = bytes("hello world", encoding="UTF-8")
     status = '200 OK'
     response_headers = [('Content-type', 'text/html'),
                         ('Content-Length', str(len(xml)))]
