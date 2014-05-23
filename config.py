@@ -21,7 +21,9 @@ import os, sys, datetime
 WEB_FOLDER          = os.path.join(os.sep, 'var', 'www')
 # Use if you want to redirect user from WEB_FOLDER to a webpage if root is visited
 #       Example: http://mysite --> http://mysite/index.html
-WEB_ENTRY_POINT     = os.path.join(os.sep, 'var', 'www', 'index.html') 
+WEB_ENTRY_POINT     = os.path.join(os.sep, 'var', 'www', 'index.html')
+# Use if your code is not in the WEB_FOLDER, this gets added to path
+CODE_ENTRY_POINT    = os.path.join(os.sep, 'var', 'www', 'Web')
 
 sys.path.append(WEB_FOLDER)
     

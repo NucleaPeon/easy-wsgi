@@ -11,8 +11,24 @@
     
 '''
 
-import config, os
+import config, os, re
 from lxml import etree as ElementTree
+import logging
+
+logging.basicConfig(filename='/var/log/easywsgi/parser.log', filemode='w',
+                   level=logging.DEBUG)
+def parse(source):
+    '''
+    '''
+    logging.debug("Beginning parsing source {}".format(source))
+    pattern = re.compile('\<\?\s(.*?)\s\?\>')
+    matches = pattern.findall(source)
+    for m in matches:
+        logging.debug("Found tag {}".format(m))
+        source = pattern.sub(m, source, count=1) # Only replace this instance of the string
+    
+    logging.debug("Source after replacement: {}".format(source))
+    return source
 
 def load_error_page(page, attempted_page, *args, **kwargs):
     '''

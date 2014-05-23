@@ -12,13 +12,10 @@
 
 # Global Python imports and then add the configuration file import for 
 # directory paths.
-import os, sys, traceback, logging
+import os, sys, traceback
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 import config, wsgi_parser
 from lxml import etree as ElementTree
-
-logging.basicConfig(filename='/var/log/easywsgi/example.log', filemode='w',
-                   level=logging.DEBUG)
 
 def application(environ, start_response):
 
@@ -28,11 +25,12 @@ def application(environ, start_response):
     
     # Get path to desired page
     path = os.path.join(config.WEB_FOLDER, name)
-    logging.debug(path)
     # Read desired page or produce error if not found
     page = open(path).read() if os.path.exists(path) else wsgi_parser.load_error_page(config.ERRORS.get('404'), path)
-    logging.debug(page)
+    # Parse all <? ?> tags
+    page = wsgi_parser.parse(page)
     # Render page in xml
+    '''
     xml = ElementTree.XML(page)
     
     if config.USE_TEMPLATES:
@@ -42,7 +40,8 @@ def application(environ, start_response):
     
     # Convert XML to bytes(str)
     xml = ElementTree.tostring(xml, encoding='US-ASCII', method='html')
-    
+    '''
+    xml = bytes("hello world", encoding="UTF-8")
     status = '200 OK'
     response_headers = [('Content-type', 'text/html'),
                         ('Content-Length', str(len(xml)))]
